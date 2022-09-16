@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="5fb6f7fd-9282-481d-bb76-f2700a210ad7" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="read_diamondFlow" doc:id="2dd4b101-8d03-4a26-9237-ad242c42f6dc" >
+		<http:listener doc:name="Listener" doc:id="f90dafc5-43e2-4b93-aa72-f587fd6d5598" config-ref="HTTP_Listener_config" path="\read-diamonds"/>
+		<file:read doc:name="Read" doc:id="00148fd8-d0d8-41c1-8b15-a8766b504cbc" />
+	</flow>
+</mule>

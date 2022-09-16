@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="341b7548-b006-4a54-8629-922162446d47" file="${env}.yaml" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cc63972f-bd35-4b97-8f82-5c35e01fb943" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<flow name="prop-yamel-demoFlow" doc:id="8da38eba-7a9b-45e0-a34d-75e4c889e1c5" >
+		<http:listener doc:name="Listener" doc:id="2ed8aa91-48ca-468a-89df-866c82930cb6" config-ref="HTTP_Listener_config" path="${http.path}"/>
+		<logger level="INFO" doc:name="Logger" doc:id="a28d4df7-dfd8-44f9-89d3-d5f1a4ffda0a" message="Database user name is: ${db.user}"/>
+	</flow>
+</mule>

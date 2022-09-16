@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:s3="http://www.mulesoft.org/schema/mule/s3"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="798a975a-68c7-4a74-b79e-abc995188c33" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="87b5d8f4-7678-4666-8163-0b8ee2f670c0" file="config.yaml" />
+	<s3:config name="Amazon_S3_Configuration" doc:name="Amazon S3 Configuration" doc:id="b87e4686-a382-4a01-99da-a6801c593d19" >
+		<s3:connection accessKey="${aws.access_key}" secretKey="${aws.secret_access_key}" />
+	</s3:config>
+	<flow name="read_data_amazon_s3Flow" doc:id="cb7dc345-8254-48a6-aa29-276fd640525f" >
+		<http:listener doc:name="Listener" doc:id="6523a4b3-50b0-4078-b6dd-3fbff2f8146e" config-ref="HTTP_Listener_config" path="/get-data"/>
+		<s3:get-object doc:name="Get Object" doc:id="ce189646-8343-4d7e-99b4-b6ebf3d7c6e6" bucketName="mulesoft-kas" config-ref="Amazon_S3_Configuration" key="airports.json"/>
+		<ee:transform doc:name="Transform Message" doc:id="3cc1df50-183e-4671-b888-ef74027f6af5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json 
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

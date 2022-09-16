@@ -1,0 +1,12 @@
+
+http:
+  port: "8082"
+  path: "read-prop"
+ 
+  
+  
+db:
+  host: "localhost"
+  port: "1521"
+  user: "system-test"
+  password: "testk"

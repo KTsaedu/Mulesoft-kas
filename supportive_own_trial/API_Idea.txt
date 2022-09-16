@@ -1,0 +1,7 @@
+
+
+UIBE has an API to manage departments, with each department identified by unique deptid. the API was built with RAML accourding to muleSoft best practices.		 
+
+
+
+mule 

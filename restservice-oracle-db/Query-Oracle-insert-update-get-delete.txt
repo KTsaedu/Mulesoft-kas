@@ -1,0 +1,23 @@
+
+
+#** insert 
+
+insert into emp(emp_id,emp_name,emp_status) values(:empID, :empName, :empStatus)
+
+{
+	empID: payload.employeeID,
+	empName: payload.employeeName,
+	empStatus: payload.employeeStatus
+}
+
+
+#**for Update
+
+update emp set emp_status=:empStatus where emp_id=:empID
+
+{
+	empStatus: payload.employee.employeeStatus,
+	empID: payload.employee.employeeID
+}
+
+

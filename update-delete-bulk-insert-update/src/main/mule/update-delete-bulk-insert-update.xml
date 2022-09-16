@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4f2fe8cf-bb17-4639-90a0-4ae9459f2d2e" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="9b72d8e4-43c3-491e-9efa-a48b9891622e" >
+		<db:my-sql-connection host="localhost " port="3306" user="root" password="Kahgert#25" database="mulesoft " />
+	</db:config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="6e97bfb3-ad11-44c6-a611-7fbb6c62936e" >
+		<file:connection workingDir="C:\MuleSoft\course_mulesoft_Dr Fisha\data-transformation\input" />
+	</file:config>
+	<file:config name="Bulk-insert-File_Config" doc:name="File Config" doc:id="629a4311-67c6-4987-90a7-60ece8059dc9" >
+		<file:connection workingDir="C:\MuleSoft\course_mulesoft_Dr Fisha\data-transformation\input"/>
+	</file:config>
+	<flow name="Update" doc:id="3b393849-9e80-4e17-8e1e-99de514d45de" >
+		<http:listener doc:name="Listener" doc:id="4b7e3ba6-ec38-482d-a46a-e16c5ab68d4f" config-ref="HTTP_Listener_config" path="/update-customer" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="001015b5-096d-4408-852a-c0c588a59985" message="Update customer information "/>
+		<db:update doc:name="Update" doc:id="a2d8ab68-bc61-4a5c-a980-32f5aea99724" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE customers 
+SET 
+    City = :new_city,
+    Country = :new_country,
+    Address = :new_address,
+    PostalCode = :new_postal_code
+WHERE
+   CustomerID = :provided_CustomerID;
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{new_city: attributes.queryParams.City,
+new_country:attributes.queryParams.Country,
+new_address: attributes.queryParams.Address,
+new_postal_code:attributes.queryParams.PostalCode,
+provided_CustomerID: attributes.queryParams.CustomerID
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="671d7890-cb86-490f-9d9d-8bcdc4df442d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json 
+---
+payload ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="Delete" doc:id="27597448-8b0d-4a30-a5e4-2b81fca4711e" >
+		<http:listener doc:name="Listener" doc:id="6b5cbee2-9abd-4cf9-90cb-a1c944836277" config-ref="HTTP_Listener_config" path="/delete-customer"/>
+		<logger level="INFO" doc:name="Logger" doc:id="8b6fa56d-499c-483d-ab24-8c1475ead395" />
+		<db:delete doc:name="Delete" doc:id="18460cec-60d3-4357-860f-62ed9e1665a5" config-ref="Database_Config">
+			<db:sql ><![CDATA[DELETE FROM customers 
+WHERE
+    CustomerID = :provided_CustomerID;
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{provided_CustomerID: attributes.queryParams.CustomerID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="145b90e6-68f9-47e8-adcb-eb01d54575da" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="update-delete-bulk-insert-updateFlow" doc:id="59c67155-d4e6-4407-8fea-7afb442dadbb" >
+		<file:listener doc:name="On New or Updated File" doc:id="ed561ba4-f183-4fa1-8950-f79a5ac5862a" config-ref="Bulk-insert-File_Config" outputMimeType="application/csv" moveToDirectory="C:\MuleSoft\course_mulesoft_Dr Fisha\data-transformation\backup">
+			<scheduling-strategy >
+				<fixed-frequency frequency="10"/>
+			</scheduling-strategy>
+			<file:matcher filenamePattern="*.csv" />
+		</file:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="6c6febc2-4b9e-4583-a815-a5c08d5da0ac" />
+		<ee:transform doc:name="JSON" doc:id="3a17a752-81f0-4b9f-b6a5-cb365b4af92d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="381b4abe-8e2e-4fc1-9952-5e6ebf1311b2" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO diamonds (productID, carat, cut, color, clarity, depth, `table`, price, x , y, z)
+VALUES (:productID, :carat, :cut, :color, :clarity, :depth, :table, :price, :x , :y, :z);
+]]></db:sql>
+		</db:bulk-insert>
+		<logger level="INFO" doc:name="Logger" doc:id="92e83e61-fadb-43b0-b530-5bb86fb2f233" />
+	</flow>
+</mule>
