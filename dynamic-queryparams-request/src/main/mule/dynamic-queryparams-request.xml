@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a8912f3b-2524-4e75-beba-7a1c6ade82fb" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="dynamic-queryparams-requestFlow" doc:id="3b3bcb55-54c4-4dfd-b1af-e054fd28fce1" >
+		<http:listener doc:name="L" doc:id="c50f181a-6c7f-456d-ac20-137795950f0c" config-ref="HTTP_Listener_config" path="get-data" doc:description="&#10;we address for the free API: https://apipheny.io/free-api/#apis-without-key&#10;Genderize.io:&#10;Predict the gender of a person based on their name.&#10;Sample API URL:&#10;https://api.genderize.io?name=luc&#10;Nationalize.io&#10;Predict the nationality of a person based on their name.&#10;&#10;Sample API URL:&#10;&#10;https://api.nationalize.io?name=nathaniel"/>
+		<set-variable value="#[attributes.queryParams.name]" doc:name="Name" doc:id="85b51f77-e0aa-4bc3-b75f-424c22abb5e0" variableName="Name"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="b0ec019f-7f05-499d-a83e-d4c1f936cf7f" >
+			<route >
+				<http:request method="GET" doc:name="Genderize" doc:id="a9291999-9002-4ea1-b7ec-b465027bc62f" url='#["https://api.genderize.io?name=" ++ vars.name]'/>
+			</route>
+			<route >
+				<http:request method="GET" doc:name="Nationalize" doc:id="35a7edc4-5faa-4101-86c1-f017e43171d2" url='#["https://api.nationalize.io?name="++ vars.name]'/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="combain" doc:id="4a6e86a0-07fc-4f9e-b625-c519fa8b9657" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "gender": payload."0".payload,
+  "nationality": payload."1".payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

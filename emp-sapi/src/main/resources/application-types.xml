@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="sucess-response" format="json">
+      <types:shape format="weave" example="examples/success-response.json"><![CDATA[%dw 2.0
+
+type sucess_response = {|
+  Status: Number {"typeId": "int"}, 
+  Message: String
+|} {"example": "{\\\"Status\\\":200,\\\"Message\\\":\\\"Success\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="update-employee-response" format="xml">
+      <types:example format="xml" element="response" location="examples/update-employee-response.xml"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#8346ccf6-0fbe-42ea-8e49-6024f60b077a">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="sucess-response"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#c84224fe-da5b-4537-bfb7-ec4981e8330b">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="update-employee-response"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
