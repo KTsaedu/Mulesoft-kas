@@ -1,0 +1,15 @@
+<cust>
+    <custId>1</custId>
+    <companyName>Customer NRZBB</companyName>
+    <contactName>Allen, Michael</contactName>
+    <contactTitle>Sales Representative</contactTitle>
+    <address>Obere Str. 0123</address>
+    <city>Berlin</city>
+    <region>null</region>
+    <postalCode>10092</postalCode>
+    <country>Germany</country>
+    <phone>030-3456789</phone>
+    <mobile>null</mobile>
+    <email>null</email>
+    <fax>030-0123456</fax>
+</cust>

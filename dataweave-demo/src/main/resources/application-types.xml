@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="BookMetaDataXML" format="xml">
+      <types:example format="xml" element="book" location="examples/book.txt"/>
+    </types:type>
+    <types:type name="BookMetaDataJSON" format="json">
+      <types:shape format="weave" example="examples/book.json"><![CDATA[%dw 2.0
+
+type BookMetaDataJSON = {|
+  item: {|
+    "type": String, 
+    price: String, 
+    properties: {|
+      title: String, 
+      author: Array<String>, 
+      year: String, 
+      language: String
+    |}
+  |}
+|} {"example": "{\\\"item\\\":{\\\"type\\\":\\\"book\\\",\\\"price\\\":\\\"30\\\",\\\"properties\\\":{\\\"title\\\":\\\"Everyday Italian\\\",\\\"author\\\":[\\\"Giada De Laurentiis\\\"],\\\"year\\\":\\\"2005\\\",\\\"language\\\":\\\"en\\\"}}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="EmployeeMetaDataCSV" format="csv">
+      <types:shape format="weave" example="examples/employee.txt"><![CDATA[%dw 2.0
+
+type EmployeeMetaDataCSV = Array<{|  empID: String,   empName: String,   empEmail: String,   empStatus: String|}> {"isQuotedString": "false",
+"header": "true",
+"headerLineNumber": "0"}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+      </types:properties>
+    </types:type>
+    <types:type name="customerMetaDataJSON" format="json">
+      <types:shape format="weave" example="examples/customerone.json"><![CDATA[%dw 2.0
+
+type customerMetaDataJSON = {|
+  custId: Number {"typeId": "int"}, 
+  companyName: String, 
+  contactName: String, 
+  contactTitle: String, 
+  address: String, 
+  city: String, 
+  region: Null, 
+  postalCode: String, 
+  country: String, 
+  phone: String, 
+  mobile: Null, 
+  email: Null, 
+  fax: String
+|} {"example": "{\\\"custId\\\":1,\\\"companyName\\\":\\\"Customer NRZBB\\\",\\\"contactName\\\":\\\"Allen, Michael\\\",\\\"contactTitle\\\":\\\"Sales Representative\\\",\\\"address\\\":\\\"Obere Str. 0123\\\",\\\"city\\\":\\\"Berlin\\\",\\\"region\\\":null,\\\"postalCode\\\":\\\"10092\\\",\\\"country\\\":\\\"Germany\\\",\\\"phone\\\":\\\"030-3456789\\\",\\\"mobile\\\":null,\\\"email\\\":null,\\\"fax\\\":\\\"030-0123456\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="EmployeeMetaDataJSON" format="json">
+      <types:shape format="weave" example="examples/employee.json"><![CDATA[%dw 2.0
+
+type EmployeeMetaDataJSON = {|
+  empID: Number {"typeId": "int"}, 
+  empName: String, 
+  empEmail: String, 
+  empStatus: String
+|} {"example": "{\\\"empID\\\":8888,\\\"empName\\\":\\\"Chollk\\\",\\\"empEmail\\\":\\\"Chollk25@gmail.com\\\",\\\"empStatus\\\":\\\"Ok\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="CustomerMetaDataXML" format="xml">
+      <types:example format="xml" element="cust" location="examples/custXML.txt"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#2022ac6f-1ba5-4baa-acf4-cc057118679a">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="BookMetaDataXML"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="BookMetaDataJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#de52cdc9-65f6-494f-8baf-68815d44ffab">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="BookMetaDataJSON"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="BookMetaDataXML"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#dc9eb1bd-5879-403c-b87a-ab0c05b7cac7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="EmployeeMetaDataJSON"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="EmployeeMetaDataCSV"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#a998b9e9-b1f9-493b-9c4a-421e712f1ea4">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="customerMetaDataJSON"/>
+          <types:attributes type="customerMetaDataJSON"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="CustomerMetaDataXML"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

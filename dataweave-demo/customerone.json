@@ -1,0 +1,15 @@
+	{
+		"custId" : 1,
+		"companyName" : "Customer NRZBB",
+		"contactName" : "Allen, Michael",
+		"contactTitle" : "Sales Representative",
+		"address" : "Obere Str. 0123",
+		"city" : "Berlin",
+		"region" : null,
+		"postalCode" : "10092",
+		"country" : "Germany",
+		"phone" : "030-3456789",
+		"mobile" : null,
+		"email" : null,
+		"fax" : "030-0123456"
+	}
