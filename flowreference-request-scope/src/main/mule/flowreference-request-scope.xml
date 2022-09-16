@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b9c7cfb5-f71e-4765-b166-e95399134000" >
+		<http:listener-connection host="0.0.0.0" port="8080" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="57009c3b-d794-4e77-947a-5fe8cc66a394" >
+		<http:request-connection host="localhost" port="8080" />
+	</http:request-config>
+	<flow name="flowreference-main-flow" doc:id="cd486d8e-b5af-42ae-9c9a-bdf705cf77db" >
+		<http:listener doc:name="Listener" doc:id="15e6d66c-0d80-45b5-aad2-0f9421a2359a" path="get-data-flowreference" config-ref="HTTP_Listener_config"/>
+		<file:read doc:name="Read" doc:id="e926a0ea-5d9d-46da-a55b-10bd29f1fbf2" path="C:\MuleSoft\airports\airports.json" outputMimeType="application/json"/>
+		<set-variable value="#[payload.^mediaType]" doc:name="payload MIME type" doc:id="903ccb2f-c248-4277-990e-bb344ca32ccc" variableName="mimeType-mainFlow"/>
+		<logger level="INFO" doc:name="log payload MIME type" doc:id="5e2f37db-759e-4993-a85c-41ca22aaf87f" message="The main Flow payload MIME type is: #[payload.^mediaType]"/>
+		<flow-ref doc:name="Flow Reference" doc:id="6e532ddf-f8b0-4734-b93f-101d8ab33a59" name="flowreference-private-flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="e91766a9-143e-4335-a146-16796909029f" />
+	</flow>
+	<flow name="flowreference-private-flow" doc:id="44f45257-09db-42c4-a9ba-b76d6533eadd" >
+		<ee:transform doc:name="Transform Message" doc:id="e5162ad5-b5ba-4859-bccd-e3fe3947d415" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload.^mediaType]" doc:name="Payload MIME Type" doc:id="90f5fdce-42fa-4875-83f1-5eadad4844a7" variableName="MIMEType-privateflow"/>
+		<logger level="INFO" doc:name="log payload MIME Type" doc:id="da13e2a0-6351-4a2d-b8ef-3b4131d95676" message='The private Flow payload MIME type is: #[vars."mimeType-privateFlow"]'/>
+	</flow>
+</mule>

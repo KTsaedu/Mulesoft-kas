@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="47e06ec3-374b-4a61-b975-fdee7987204c" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="dbdf124e-eec6-457c-9405-e4a1be590bca" />
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="0bb4564f-e2b9-4301-ac10-5a2786943a67" >
+		<jms:active-mq-connection username="admin" password="admin" />
+	</jms:config>
+	<flow name="jms_mq-projectFlow" doc:id="90ecd45a-5062-4b0c-8740-344a2a808045" >
+		<http:listener doc:name="Listener" doc:id="594db632-c8c3-4e8e-9310-399b87093685" config-ref="HTTP_Listener_config" path="/testJMS"/>
+		<file:read doc:name="Read" doc:id="34cb6009-06c8-40e8-96c9-354ccd473142" path="C:\MuleSoft\course_mulesoft_Dr Fisha\mulesoft-main\mulesoft-main\Free_MuleSoft_Developer_Course\data\customers.json" config-ref="File_Config"/>
+		<jms:publish doc:name="Publish" doc:id="c8b28921-274a-4fc2-bb34-5ffba2058bd4" config-ref="JMS_Config" destination="Hiyab" timeToLiveUnit="MILLISECONDS"/>
+		<set-payload value='"Message Write"' doc:name="Set Payload" doc:id="bc258d37-6e5b-4567-8313-adec14ad7b05" />
+	</flow>
+</mule>

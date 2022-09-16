@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="471785c1-2f29-466c-8a91-d6ff1cd2f4a8" >
+		<db:oracle-connection host="localhost" user="system" password="Kahgert#25" instance="XE" />
+	</db:config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="86f074cd-f686-424e-b969-dcbc049593ff" >
+		<jms:active-mq-connection username="admin" password="admin" >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="monster-vendor-appFlow" doc:id="96fcbb50-cbb4-4951-bdb5-4b26612174d1" >
+		<scheduler doc:name="Scheduler" doc:id="e03ff095-2ecb-4bc2-8669-670339547049" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="2" timeUnit="MINUTES"/>
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" doc:name="Start Log" doc:id="269eefdc-4957-467e-b925-2dc288a2e3ee" message="publish profiles flow started "/>
+		<db:select doc:name="Select Emp Profile" doc:id="c4c205ff-a462-438d-8b01-9bf7becd19c5" config-ref="Database_Config">
+			<db:sql ><![CDATA[select emp_name, emp_phone, emp_email, emp_skills from emp_profile ]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Profile Payload" doc:id="3a2dcf6a-c426-410d-bdbd-74f951512eb1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map (emp, indexOfEmp) -> {
+employeeName: emp.emp_name,
+employeeEmail: emp.emp_email,
+employeePhone: emp.emp_phone,
+employeeSkills: emp.emp_skilles
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<jms:publish doc:name="Publish Emp Profiles" doc:id="95f4b561-7f55-4f85-89e8-ba82e4c55852" config-ref="JMS_Config" destination="T.MONSTER.PROFILES" destinationType="TOPIC">
+			<jms:message outboundContentType="application/json" />
+		</jms:publish>
+		<logger level="INFO" doc:name="End Log " doc:id="654def43-35d4-4087-a789-a1e87897dfb2" message="The flow has been completed "/>
+	</flow>
+</mule>

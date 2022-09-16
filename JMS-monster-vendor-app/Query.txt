@@ -1,0 +1,32 @@
+
+
+select emp_name, emp_phone, emp_email, emp_skills from emp_profile 
+
+
+
+**## Query used to create table 
+
+CREATE TABLE emp_profile (
+    emp_name VARCHAR2(50),
+    emp_phone NUMBER NOT NULL,
+    emp_email VARCHAR2(50) NOT NULL,
+	emp_skills VARCHAR2(50) NOT NULL,
+    PRIMARY KEY(emp_name)
+);
+
+select * from emp_profile 
+
+INSERT into emp_profile
+    (emp_name, emp_phone, emp_email, emp_skills )  
+VALUES
+    ('kas', 202, 'kas@gmail.com', 'mule'); 
+    
+    INSERT into emp_profile
+    (emp_name, emp_phone, emp_email, emp_skills )  
+VALUES
+    ('chollk', 204204, 'chollk@gmail.com', 'mule,java'); 
+
+ INSERT into emp_profile
+    (emp_name, emp_phone, emp_email, emp_skills )  
+VALUES
+    ('Ellora', 101010, 'ellora@gmail.com', 'micrsoft,stata'); 

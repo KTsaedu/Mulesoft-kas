@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="jms-demo-subscriber_Flow" doc:id="7536de39-c2fa-4ffc-9c41-dea40e75c86d" >
+		<jms:listener doc:name="On New Message" doc:id="3c3cf70b-db7c-45df-9810-2fad047c848a" config-ref="JMS_Config" destination="Q.KAS.SAMPLE" ackMode="DUPS_OK"/>
+		<logger level="INFO" doc:name="Start Log" doc:id="416d31df-76a5-4a0e-87c6-5c5af1b24cb8" message="Log started "/>
+		<db:select doc:name="Select" doc:id="363c5de8-a7c4-4bdc-8d43-efba6a42a7f8" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from emp]]></db:sql>
+		</db:select>
+		<logger level="INFO" doc:name="End Log " doc:id="8c56d19d-5264-4180-9d9c-507a4193d4cf" message="Completed flow "/>
+	</flow>
+</mule>

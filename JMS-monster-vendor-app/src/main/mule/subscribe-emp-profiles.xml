@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<flow name="subscribe-emp-profilesFlow" doc:id="0a8a972c-7785-4f88-af44-0bda943c4d40" >
+		<jms:listener doc:name="On New Message" doc:id="400c0a06-c84b-4ada-b541-498cef79dd7d" config-ref="JMS_Config" destination="Q.MONSTER.PROFILES" inboundContentType="applicatio/json">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Start Log" doc:id="b4c3404c-5e66-472f-9739-0a3eb379c510" message="#[payload]"/>
+	</flow>
+</mule>

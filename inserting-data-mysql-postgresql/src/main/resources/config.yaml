@@ -1,0 +1,12 @@
+mysql: 
+    Host: "localhost"
+    Password: "Kahgert#25"
+    User: "root"
+    Database: "mulesoft"
+    Port: "3306"
+
+postgresql:
+    Url: "jdbc:postgresql://localhost:5432/mulesoft"
+    Password: "Kahgert#25"
+    User: "postgres"
+    Driver_name: "org.postgresql.Driver"
