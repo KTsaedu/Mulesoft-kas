@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="get:\fetch-employee:emp-onboard-sapi-config" doc:id="92442c9e-1510-45a6-a92d-5ff6c3577b83" >
+		<ee:transform doc:name="Transform Message" doc:id="821c4138-5d95-4d63-91d3-b224e026c4cb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  empid: 200,
+  empname: "chollk",
+  status: "Ok"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="post:\add-employee:application\json:emp-onboard-sapi-config" doc:id="ac6dea63-fa37-4950-adcd-3e40fc8894ef" >
+		<ee:transform doc:name="Transform Message" doc:id="adca3a32-fb61-422f-bcb6-7110331f5e15" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: 200,
+  message: "Success"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+	<flow name="get:\delete-employee\(empid):emp-onboard-sapi-config" doc:id="87e23c8d-3c8a-4746-b120-d9b23ba0001d">
+        <logger level="INFO" doc:name="Logger" doc:id="fa76eeaf-0925-4cdc-93a6-b2d641f2b0e1" message="Delete-employee Log"/>
+		<ee:transform>
+            <ee:variables>
+                <ee:set-variable variableName="empid">attributes.uriParams.'empid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  empid: 200,
+  empname: "chollk",
+  status: "Ok"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="post:\update-employee:application\json:emp-onboard-sapi-config" doc:id="7fbabb5c-99a2-484d-8e3c-43be4b2fc074">
+        <logger level="INFO" doc:name="Logger" doc:id="5aa99c37-902f-4f23-8e0b-21d291fc1b7d" message="Update employee log"/>
+		<ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+---
+{
+  response: {
+    status: "200",
+    message: "server error"
+  }
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+	
+	
+	
+</mule>
